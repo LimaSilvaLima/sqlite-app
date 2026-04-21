@@ -1,6 +1,7 @@
-import { useProductDatabase } from "@/database/useProductDatabase";
-import { useState } from "react";
-import { Alert, Button, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { Product } from "@/components/Product";
+import { ProductDatabase, useProductDatabase } from "@/database/useProductDatabase";
+import { useEffect, useState } from "react";
+import { Alert, Button, FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { Input } from "../components/Input";
 
 
@@ -9,7 +10,8 @@ export default function Index(){
     const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
-    const [products, setProducts] = useState([]);
+    const [search, setSearch] = useState("");
+    const [products, setProducts] = useState<ProductDatabase[]>([]);
 
     const productDatabase = useProductDatabase();
    
@@ -24,9 +26,20 @@ export default function Index(){
        } catch (error) {
             console.log(error);
        }
-       
-        
     }
+
+    async function list(){
+        try {
+            const response = await productDatabase.searchByName(search);
+            setProducts(response);           
+        } catch (error) {
+            console.log(error);
+        } 
+    }
+    useEffect(() => {
+        list();
+    }, [search]);
+
 
     return(
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex:1}}>
@@ -35,7 +48,13 @@ export default function Index(){
                     <Input placeholder="Nome" onChangeText={setName} value={name}/>
                     <Input placeholder="Quantidade" onChangeText={setQuantity} value={quantity}/>
                     <Button title="Salvar" onPress={create}/>
-                </View>
+                    <FlatList
+                        data={products}
+                        keyExtractor={(item) => String(item.id)}
+                        renderItem={({ item }) => <Product data={item}  />}
+                        scrollEnabled={false}
+                    /> 
+                </View>   
             </ScrollView>
         </KeyboardAvoidingView>
     );

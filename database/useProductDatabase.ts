@@ -25,7 +25,28 @@ export function useProductDatabase() {
         } finally {
             await statement.finalizeAsync();
         }
+
+
     }
     
-    return { create };
+
+    async function searchByName (name: string){ 
+        try {
+            const query = "SELECT * FROM products WHERE name LIKE ?";
+            const response = await database.getAllAsync<ProductDatabase>(
+                query,
+                `%${name}%`)
+            return response;
+        } catch (error) {
+            throw error;
+        }
+        
+    }
+
+    return {
+        create,
+        searchByName
+    }
+
+
 }
