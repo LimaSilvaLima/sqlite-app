@@ -22,6 +22,7 @@ export default function Index(){
             return;
         }
         const response = await productDatabase.create({name, quantity: Number(quantity)})
+        list(); 
         Alert.alert("Produto cadastrado com sucesso ID: " + response.insertedRowId);
        } catch (error) {
             console.log(error);
@@ -48,11 +49,13 @@ export default function Index(){
                     <Input placeholder="Nome" onChangeText={setName} value={name}/>
                     <Input placeholder="Quantidade" onChangeText={setQuantity} value={quantity}/>
                     <Button title="Salvar" onPress={create}/>
+                    <Input placeholder="Pesquisar por nome" onChangeText={setSearch} value={search}/>
                     <FlatList
                         data={products}
                         keyExtractor={(item) => String(item.id)}
                         renderItem={({ item }) => <Product data={item}  />}
                         scrollEnabled={false}
+                        contentContainerStyle={{ gap: 8 }}
                     /> 
                 </View>   
             </ScrollView>
