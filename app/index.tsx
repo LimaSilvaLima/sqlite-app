@@ -22,7 +22,7 @@ export default function Index(){
             return;
         }
         const response = await productDatabase.create({name, quantity: Number(quantity)})
-        list(); 
+        //list(); 
         Alert.alert("Produto cadastrado com sucesso ID: " + response.insertedRowId);
        } catch (error) {
             console.log(error);
@@ -37,6 +37,43 @@ export default function Index(){
             console.log(error);
         } 
     }
+
+    function details(item: ProductDatabase){
+        setId(String(item.id));
+        setName(item.name);
+        setQuantity(String(item.quantity));
+    }
+
+    async function handleSave(){
+        if(id){
+            update();
+        } else{
+            create();
+        }
+        setId("");
+        setName("");
+        setQuantity("");
+        await list();
+    }
+
+    async function update(){
+        try {
+            if(isNaN(Number(quantity))){
+                Alert.alert("Quantidade precisa ser um Numero");
+                return;
+            }
+            const response = await productDatabase.update({
+                id: Number(id),
+                name,
+                quantity: Number(quantity)
+            });
+            //list();
+            Alert.alert("Produto atualizado com sucesso");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         list();
     }, [search]);
@@ -48,12 +85,12 @@ export default function Index(){
                 <View style={{ flex: 1, justifyContent: 'center', padding: 32, gap: 16 }}>
                     <Input placeholder="Nome" onChangeText={setName} value={name}/>
                     <Input placeholder="Quantidade" onChangeText={setQuantity} value={quantity}/>
-                    <Button title="Salvar" onPress={create}/>
-                    <Input placeholder="Pesquisar por nome" onChangeText={setSearch} value={search}/>
+                    <Button title="Salvar" onPress={handleSave}/>
+                    <Input placeholder="Pesquisar por nome" onChangeText={setSearch } value={search}/>
                     <FlatList
                         data={products}
                         keyExtractor={(item) => String(item.id)}
-                        renderItem={({ item }) => <Product data={item}  />}
+                        renderItem={({ item }) => <Product data={item} onPress={() => details(item)} />}
                         scrollEnabled={false}
                         contentContainerStyle={{ gap: 8 }}
                     /> 

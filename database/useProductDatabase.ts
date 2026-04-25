@@ -25,11 +25,26 @@ export function useProductDatabase() {
         } finally {
             await statement.finalizeAsync();
         }
+    }
 
-
+     async function update(data: ProductDatabase){
+        const statement = await database.prepareAsync(
+            "UPDATE products SET name = $name, quantity = $quantity WHERE id = $id")
+        try {
+            const result = await statement.executeAsync({
+                $id: data.id,
+                $name: data.name,
+                $quantity: data.quantity
+            })
+            const insertedRowId = result.lastInsertRowId.toLocaleString();
+            return{insertedRowId}   
+        } catch (error) {
+            throw error;
+        } finally {
+            await statement.finalizeAsync();
+        }
     }
     
-
     async function searchByName (name: string){ 
         try {
             const query = "SELECT * FROM products WHERE name LIKE ?";
@@ -45,7 +60,8 @@ export function useProductDatabase() {
 
     return {
         create,
-        searchByName
+        searchByName,
+        update
     }
 
 
