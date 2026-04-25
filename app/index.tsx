@@ -4,15 +4,12 @@ import { useEffect, useState } from "react";
 import { Alert, Button, FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { Input } from "../components/Input";
 
-
 export default function Index(){
-
     const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [search, setSearch] = useState("");
     const [products, setProducts] = useState<ProductDatabase[]>([]);
-
     const productDatabase = useProductDatabase();
    
     async function create(){
@@ -77,7 +74,6 @@ export default function Index(){
     useEffect(() => {
         list();
     }, [search]);
-
 
     return(
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex:1}}>

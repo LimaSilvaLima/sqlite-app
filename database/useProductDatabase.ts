@@ -8,8 +8,6 @@ export type ProductDatabase = {
 
 export function useProductDatabase() {
     const database = useSQLiteContext();
-
-
     async function create(data: Omit<ProductDatabase, 'id'>){
         const statement = await database.prepareAsync(
             "INSERT INTO products (name, quantity) VALUES ($name, $quantity)")
@@ -63,6 +61,5 @@ export function useProductDatabase() {
         searchByName,
         update
     }
-
 
 }
