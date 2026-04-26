@@ -59,7 +59,7 @@ export function useProductDatabase() {
 
     async function remove(id: number){
         try {
-            await database.execAsync("DELETE FROM products WHERE id =" + [id]);
+            await database.runAsync("DELETE FROM products WHERE id = ?", [id]);
             //list();
             Alert.alert("Produto removido com sucesso");
         } catch (error) {
@@ -67,13 +67,21 @@ export function useProductDatabase() {
         }
     }
 
+    async function show(id: number){
+        try {
+            const query = "SELECT * FROM products WHERE id = ?";
+            const response = await database.getFirstAsync<ProductDatabase>(query, [id]);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     return {
         create,
         searchByName,
         update,
+        show,
         remove
-    
     }
-
 }

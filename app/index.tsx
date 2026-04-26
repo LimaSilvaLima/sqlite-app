@@ -1,5 +1,6 @@
 import { Product } from "@/components/Product";
 import { ProductDatabase, useProductDatabase } from "@/database/useProductDatabase";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, FlatList, KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { Input } from "../components/Input";
@@ -45,9 +46,9 @@ export default function Index(){
 
     async function handleSave(){
         if(id){
-            update();
+            await update();
         } else{
-            create();
+            await create();
         }
         setId("");
         setName("");
@@ -97,7 +98,15 @@ export default function Index(){
                     <FlatList
                         data={products}
                         keyExtractor={(item) => String(item.id)}
-                        renderItem={({ item }) => <Product data={item} onPress={() => details(item)} onDelete={() => remove(item.id)} />}
+                        renderItem={({ item }) => 
+                        <Product
+                            data={item}
+                            onPress={() => details(item)}
+                            onDelete={() => remove(item.id)}
+                            onOpen={() => router.navigate("/details/" + item.id) }
+                            //onOpen={() => details(item)}
+                        />
+                        }
                         scrollEnabled={false}
                         contentContainerStyle={{ gap: 8 }}
                     /> 
