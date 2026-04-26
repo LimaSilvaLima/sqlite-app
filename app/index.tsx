@@ -35,6 +35,8 @@ export default function Index(){
         } 
     }
 
+    
+
     function details(item: ProductDatabase){
         setId(String(item.id));
         setName(item.name);
@@ -71,6 +73,15 @@ export default function Index(){
         }
     }
 
+    async function remove(id: number) {
+        try {
+            await productDatabase.remove(id);
+            await list(); // Atualiza a lista após remover
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         list();
     }, [search]);
@@ -86,7 +97,7 @@ export default function Index(){
                     <FlatList
                         data={products}
                         keyExtractor={(item) => String(item.id)}
-                        renderItem={({ item }) => <Product data={item} onPress={() => details(item)} />}
+                        renderItem={({ item }) => <Product data={item} onPress={() => details(item)} onDelete={() => remove(item.id)} />}
                         scrollEnabled={false}
                         contentContainerStyle={{ gap: 8 }}
                     /> 

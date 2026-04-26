@@ -1,4 +1,5 @@
 import { useSQLiteContext } from "expo-sqlite";
+import { Alert } from "react-native";
 
 export type ProductDatabase = {
     id: number;
@@ -56,10 +57,23 @@ export function useProductDatabase() {
         
     }
 
+    async function remove(id: number){
+        try {
+            await database.execAsync("DELETE FROM products WHERE id =" + [id]);
+            //list();
+            Alert.alert("Produto removido com sucesso");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     return {
         create,
         searchByName,
-        update
+        update,
+        remove
+    
     }
 
 }
